@@ -1,5 +1,6 @@
 import 'package:consultation_app/pages/auth/login_view.dart';
 import 'package:consultation_app/pages/auth/register_view.dart';
+import 'package:consultation_app/services/api/auth_api_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,8 +20,11 @@ class _ReTabBarViewState extends State<ReTabBarView>
     with TickerProviderStateMixin {
   late TabController _tabController;
 
+
+
   @override
   void initState() {
+    // test();
     // TODO: implement initState
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
@@ -36,7 +40,6 @@ class _ReTabBarViewState extends State<ReTabBarView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xffeeeeee),
       body: Stack(
@@ -90,14 +93,15 @@ class _ReTabBarViewState extends State<ReTabBarView>
           ),
           Padding(
             padding: EdgeInsets.only(
-              top: _tabController.index == 0 ? 10 : 165,
+              top: _tabController.index == 0 ? 10 : 160,
             ),
             child: Center(
               child: Container(
+
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
+                const EdgeInsets.symmetric(horizontal: 30, vertical: 40),
                 margin:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+                const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(55.r)),

@@ -1,9 +1,14 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:consultation_app/core/helper/shared_perf.dart';
+import 'package:consultation_app/pages/auth/login_view.dart';
 import 'package:consultation_app/pages/tabBar/tab_bar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/utils/constants.dart';
+import '../home/home_view.dart';
 
 class SplashView extends StatefulWidget {
   static String id = '/splash_view';
@@ -19,10 +24,16 @@ class _SplashViewState extends State<SplashView> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Future.delayed(const Duration(seconds: 3),() {
-       Navigator.pushReplacementNamed(context, ReTabBarView.id);
-    },);
+    Future.delayed(
+      const Duration(seconds: 1),
+      () {
+        String route =
+            SharedPerfController().loggedIn ? HomeScreen.id : ReTabBarView.id;
+        Navigator.pushReplacementNamed(context, route);
+      },
+    );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,11 +51,18 @@ class _SplashViewState extends State<SplashView> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // CachedNetworkImage(
+            //   imageUrl: palestineAsset,
+            //   width: 76.w,
+            //   height: 103.h,
+            //
+            // )
             Image.asset(
               palestineAsset,
               width: 76.w,
               height: 103.h,
             ),
+
             SizedBox(
               height: 18.h,
             ),

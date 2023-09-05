@@ -1,3 +1,4 @@
+import 'package:consultation_app/core/helper/shared_perf.dart';
 import 'package:consultation_app/core/utils/constants.dart';
 import 'package:consultation_app/pages/home/home_view.dart';
 import 'package:consultation_app/pages/home/search_view.dart';
@@ -7,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+void main()async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await SharedPerfController().initPerf();
   runApp(const MyApp());
 }
 
@@ -36,7 +39,7 @@ class MyApp extends StatelessWidget {
                   titleTextStyle:
                       GoogleFonts.poppins(color: kAppBarColor, fontSize: 18))),
           debugShowCheckedModeBanner: false,
-          initialRoute: HomeScreen.id,
+          initialRoute: SplashView.id,
           routes: {
             SplashView.id: (context) => const SplashView(),
             ReTabBarView.id: (context) => const ReTabBarView(),
