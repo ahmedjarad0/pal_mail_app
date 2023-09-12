@@ -1,3 +1,15 @@
+// To parse this JSON data, do
+//
+//     final tag = tagFromJson(jsonString);
+
+import 'dart:convert';
+
+Tag tagFromJson(String str) => Tag.fromJson(json.decode(str));
+
+String tagToJson(Tag data) => json.encode(data.toJson());
+
+
+
 class Tag {
   int? id;
   String? name;

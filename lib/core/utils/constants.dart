@@ -21,4 +21,6 @@ const String registerUrl = '${baseUrl}register';
 const String logoutUrl = '${baseUrl}logout';
 const String userUrl = '${baseUrl}user';
 const String tagsUrl = '${baseUrl}tags';
-const String statusesUrl = '${baseUrl}statuses?mail=false';
+const String mailsUrl = '${baseUrl}mails';
+const String categoriesUrl = '${baseUrl}categories';
+const String statusesUrl = '${baseUrl}statuses?mail=true';

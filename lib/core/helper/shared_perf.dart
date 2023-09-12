@@ -20,6 +20,7 @@ class SharedPerfController {
 
   Future<void> save(User user) async {
     await _sharedPreferences.setString(PerfKeys.user.name, userToJson(user));
+    await _sharedPreferences.setString(PerfKeys.token.name, user.token!);
     await _sharedPreferences.setBool(PerfKeys.loggedIn.name, true);
   }
 
@@ -28,7 +29,7 @@ class SharedPerfController {
   }
 
   String get userAuth => _sharedPreferences.getString(PerfKeys.user.name)!;
-
+String get token => _sharedPreferences.getString(PerfKeys.token.name)! ;
   bool get loggedIn =>
       _sharedPreferences.getBool(PerfKeys.loggedIn.name) ?? false;
 }

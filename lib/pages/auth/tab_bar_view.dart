@@ -1,6 +1,6 @@
 import 'package:consultation_app/pages/auth/login_view.dart';
 import 'package:consultation_app/pages/auth/register_view.dart';
-import 'package:consultation_app/services/api/auth_api_controller.dart';
+import 'package:consultation_app/services/auth_api_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -40,7 +40,6 @@ class _ReTabBarViewState extends State<ReTabBarView>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xffeeeeee),
       body: Stack(
         alignment: AlignmentDirectional.center,
@@ -106,61 +105,63 @@ class _ReTabBarViewState extends State<ReTabBarView>
                   color: Colors.white,
                   borderRadius: BorderRadius.all(Radius.circular(55.r)),
                 ),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TabBar(
-                      physics: const NeverScrollableScrollPhysics(),
-                      indicator: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.r),
-                        color: kPrimaryColor,
-                      ),
-                      unselectedLabelColor: kPrimaryColor,
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      TabBar(
+                        physics: const NeverScrollableScrollPhysics(),
+                        indicator: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.r),
+                          color: kPrimaryColor,
+                        ),
+                        unselectedLabelColor: kPrimaryColor,
 
-                      labelColor: Colors.white,
-                      controller: _tabController,
-                      tabs: [
-                        Container(
-                            alignment: AlignmentDirectional.center,
-                            width: 132.w,
-                            height: 32.h,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
-                              color: null,
-                            ),
-                            child: Text(
-                              'Login',
-                              style: GoogleFonts.poppins(
-                                fontSize: 14,
+                        labelColor: Colors.white,
+                        controller: _tabController,
+                        tabs: [
+                          Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 132.w,
+                              height: 32.h,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12.r),
+                                color: null,
                               ),
-                            )),
-                        Container(
-                            alignment: AlignmentDirectional.center,
-                            width: 132.w,
-                            height: 32.h,
-                            child: Text('Sign Up',
+                              child: Text(
+                                'Login',
                                 style: GoogleFonts.poppins(
                                   fontSize: 14,
-                                ))),
-                      ],
-                      onTap: (int selectedTab) {
-                        setState(() {
-                          _tabController.index = selectedTab;
-                        });
-                      },
-                    ),
-                    IndexedStack(index: _tabController.index, children: [
-                      Visibility(
-                        visible: _tabController.index == 0,
-                        child: const LoginView(),
+                                ),
+                              )),
+                          Container(
+                              alignment: AlignmentDirectional.center,
+                              width: 132.w,
+                              height: 32.h,
+                              child: Text('Sign Up',
+                                  style: GoogleFonts.poppins(
+                                    fontSize: 14,
+                                  ))),
+                        ],
+                        onTap: (int selectedTab) {
+                          setState(() {
+                            _tabController.index = selectedTab;
+                          });
+                        },
                       ),
-                      Visibility(
-                        visible: _tabController.index == 1,
-                        child: const RegisterView(),
-                      ),
-                    ]),
-                  ],
+                      IndexedStack(index: _tabController.index, children: [
+                        Visibility(
+                          visible: _tabController.index == 0,
+                          child: const LoginView(),
+                        ),
+                        Visibility(
+                          visible: _tabController.index == 1,
+                          child: const RegisterView(),
+                        ),
+                      ]),
+                    ],
+                  ),
                 ),
               ),
             ),

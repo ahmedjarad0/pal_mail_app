@@ -1,3 +1,4 @@
+import 'package:consultation_app/core/helper/api_helper.dart';
 import 'package:flutter/material.dart';
 
 mixin Helper {
@@ -8,4 +9,7 @@ mixin Helper {
       backgroundColor: success ? Colors.green.shade500 : Colors.red.shade500,
     ));
   }
+  ApiHelper get successApi => const ApiHelper('Operation Successfully', true);
+  ApiHelper get errorApi => const ApiHelper('Operation failed', false);
+
 }

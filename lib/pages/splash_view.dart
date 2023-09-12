@@ -1,14 +1,14 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:consultation_app/core/helper/shared_perf.dart';
 import 'package:consultation_app/pages/auth/login_view.dart';
-import 'package:consultation_app/pages/tabBar/tab_bar_view.dart';
+import 'package:consultation_app/pages/auth/tab_bar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../core/utils/constants.dart';
-import '../home/home_view.dart';
+import '../core/utils/constants.dart';
+import 'home/home_view.dart';
 
 class SplashView extends StatefulWidget {
   static String id = '/splash_view';

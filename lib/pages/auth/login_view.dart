@@ -1,8 +1,8 @@
 import 'package:consultation_app/core/helper/api_helper.dart';
 import 'package:consultation_app/core/helper/mixin_helper.dart';
-import 'package:consultation_app/pages/splash/splash_view.dart';
+import 'package:consultation_app/pages/splash_view.dart';
 import 'package:consultation_app/pages/widgets/custom_primary_btn.dart';
-import 'package:consultation_app/services/api/auth_api_controller.dart';
+import 'package:consultation_app/services/auth_api_controller.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,6 +61,10 @@ class _LoginViewState extends State<LoginView> with Helper {
             height: 50.h,
           ),
           TextFormField(
+            onTapOutside: (v) {
+              FocusScope.of(context).unfocus();
+
+            },
             controller: _emailCtl,
             validator: (value) {
               if (EmailValidator.validate(value!)) {
@@ -79,6 +83,10 @@ class _LoginViewState extends State<LoginView> with Helper {
             height: 30.h,
           ),
           TextFormField(
+            onTapOutside: (v) {
+            FocusScope.of(context).unfocus();
+
+          },
             controller: _passwordCtl,
             validator: (value) {
               if (value != null && value.isEmpty) {
