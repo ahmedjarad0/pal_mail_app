@@ -1,12 +1,16 @@
-import 'package:consultation_app/core/helper/api_response.dart';
 import 'package:consultation_app/model/statues.dart';
 import 'package:consultation_app/services/statues_api_controller.dart';
 import 'package:flutter/cupertino.dart';
+enum StatusesState { Initial, Loading, Loaded, Error }
 
 class StatusProvider extends ChangeNotifier {
-  late ApiResponse<List<Statuses>> _status;
+  StatusesState _state = StatusesState.Initial;
+  StatusesState get state => _state;
+List<Statuses>? _statuses;
+  List<Statuses>? get statuses=> _statuses;
 
-  ApiResponse <List<Statuses>>get status => _status;
+
+
 
   StatusProvider(){
     getStatus() ;
@@ -15,15 +19,15 @@ class StatusProvider extends ChangeNotifier {
   final StatuesApiController _statuesApiController = StatuesApiController();
 
   Future<void> getStatus() async {
-    _status = ApiResponse.loading('loading');
-    notifyListeners();
+    _state = StatusesState.Loading;
     try {
       final repo = await _statuesApiController.getAllStatues();
-      _status = ApiResponse.completed(repo);
-      notifyListeners();
+      _statuses = repo.data.statuses;
+      _state =StatusesState.Loaded;
     } catch (e) {
-      _status = ApiResponse.error(e.toString());
-      notifyListeners();
+      _state =StatusesState.Error;
     }
+    notifyListeners();
+
   }
 }
