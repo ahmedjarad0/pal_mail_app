@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:consultation_app/core/helper/response_model.dart';
 import 'package:consultation_app/core/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,7 +10,7 @@ import '../model/mail.dart';
 import '../model/user.dart' ;
 
 class MailApiController {
-  Future<List<Mails>> getAllMails() async {
+  Future<ResponseModel> getAllMails() async {
     print('hello');
    final userAuth = userFromJson(SharedPerfController().userAuth);
     Uri uri = Uri.parse(mailsUrl);
@@ -20,9 +21,9 @@ class MailApiController {
     print(response.statusCode);
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
-      var jsonArray = jsonResponse['mails'] as List;
-      return jsonArray.map((e) => Mails.fromJson(e)).toList();
+      var jsonObject  = MailModel.fromJson(jsonResponse);
+      return ResponseModel(data: jsonObject,message: 'Success');
     }
-    return [];
+    return ResponseModel(message: 'failed');
   }
 }

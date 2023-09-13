@@ -1,30 +1,33 @@
-import 'package:consultation_app/core/helper/api_response.dart';
 import 'package:consultation_app/services/mail_api_controller.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../model/mail.dart';
+enum MailsState { Initial, Loading, Loaded, Error }
 
 class MailProvider extends ChangeNotifier {
-  late ApiResponse<List<Mails>> _mails;
+  MailsState _state = MailsState.Initial ;
+  MailsState get  state=> _state;
 
+     List<Mails>? _mails ;
+     List<Mails>?  get allMails=>  _mails ;
   final MailApiController _mailApiController = MailApiController();
 
-  ApiResponse<List<Mails>> get mails => _mails;
 
   MailProvider() {
     getAllMails();
   }
 
   Future<void> getAllMails() async {
-    _mails = ApiResponse.loading('loading');
-    notifyListeners();
+    _state = MailsState.Loading ;
     try {
       final repo = await _mailApiController.getAllMails();
-      _mails = ApiResponse.completed(repo);
-      notifyListeners();
+      _mails = repo.data.mails;
+      _state = MailsState.Loaded ;
+
     } catch (e) {
-      _mails = ApiResponse.error(e.toString());
-      notifyListeners();
+      _state = MailsState.Error ;
     }
+    notifyListeners();
+
   }
 }
