@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:consultation_app/core/helper/response_model.dart';
 import 'package:consultation_app/core/utils/constants.dart';
 import 'package:http/http.dart' as http;
 
@@ -9,7 +10,7 @@ import '../model/category.dart';
 import '../model/user.dart';
 
 class CategoryApiController {
-  Future<List<Categories>> getCategories() async {
+  Future<ResponseModel> getCategories() async {
     User userAuth = userFromJson(SharedPerfController().userAuth);
     Uri uri = Uri.parse(categoriesUrl);
     var response = await http.get(uri, headers: {
@@ -19,9 +20,9 @@ class CategoryApiController {
     print(response.statusCode);
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
-      var jsonArray = jsonResponse['categories'] as List;
-      return jsonArray.map((e) => Categories.fromJson(e)).toList();
+      var jsonObject = CategoryModel.fromJson(jsonResponse);
+      return ResponseModel(data: jsonObject,message: 'success');
     }
-    return [];
+    return ResponseModel(message: 'failed');
   }
 }
