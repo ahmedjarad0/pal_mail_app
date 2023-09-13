@@ -1,8 +1,7 @@
 import 'package:consultation_app/core/helper/api_helper.dart';
-import 'package:consultation_app/core/helper/api_response.dart';
 import 'package:consultation_app/core/helper/mixin_helper.dart';
 import 'package:consultation_app/core/utils/constants.dart';
-import 'package:consultation_app/model/item.dart';
+import 'package:consultation_app/model/mail.dart';
 import 'package:consultation_app/pages/home/search_view.dart';
 import 'package:consultation_app/pages/home/widget/content_expansion_tile.dart';
 import 'package:consultation_app/pages/home/widget/custom_expansion_tile.dart';
@@ -12,13 +11,13 @@ import 'package:consultation_app/provider/category_provider.dart';
 import 'package:consultation_app/provider/mails_provider.dart';
 import 'package:consultation_app/services/auth_api_controller.dart';
 import 'package:consultation_app/services/category_api_controller.dart';
-import 'package:consultation_app/services/statues_api_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:shimmer/shimmer.dart';
 import '../../provider/status_provider.dart';
 import 'widget/advance_drawer.dart';
 
@@ -32,14 +31,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with Helper {
-  final List<Item> _item = <Item>[
-    Item(headerValue: 'Official Organization', expandedValue: 'Ahmed'),
-    Item(headerValue: 'NGOs', expandedValue: 'Mohammed'),
-    Item(headerValue: 'Others', expandedValue: 'Mustafa'),
-  ];
   final _advancedDrawerController = AdvancedDrawerController();
-  String _content = '1';
-  bool _customExpandedTile = false;
+  String content = '1';
 
   void test() async {
     await CategoryApiController().getCategories();
@@ -95,127 +88,154 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                 width: 15.w,
               ),
             ]),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Padding(
-              padding: EdgeInsets.all(15),
-              child: ConsumerStatusProvider(),
-            ),
-            SizedBox(
-              height: 23.h,
-            ),
-            Consumer2<CategoryProvider, MailProvider>(
-              builder: (context, categoryProvider, mailProvider, child) {
-                if (categoryProvider.categories.status == StatusCode.LOADING) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (categoryProvider.categories.status ==
-                    StatusCode.COMPLETED) {
-                  return Expanded(
-                    child: ListView.builder(
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return CustomExpansionTile(
-                            title:
-                                categoryProvider.categories.data![index].name!,
-                            count: categoryProvider
-                                .categories.data![index].sendersCount
-                                .toString(),
-                            child: ListView.separated(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              separatorBuilder: (context, index) =>
-                                  const Divider(
-                                color: Colors.grey,
-                              ),
-                              itemBuilder: (context, index) {
-                                final mailsData =
-                                    mailProvider.mails.data![index];
-                                return ContentExpansionTile(
-                                  color: int.parse(mailsData.status!.color!),
-                                  title: mailsData.sender!.name!,
-                                  date: mailsData.archiveDate!,
-                                  subject: mailsData.subject!,
-                                  tags: mailsData.tags!
-                                      .map((e) => '${e.name}   ')
-                                      .toList()
-                                      .join()
-                                      .toString(),
-                                  photoList: const SizedBox(),
-                                );
-                              },
-                              itemCount:
-                                  mailProvider.mails.data!.length,
-                            ));
-                      },
-                      itemCount: categoryProvider.categories.data!.length,
-                    ),
-                  );
-                } else if (categoryProvider.categories.status ==
-                    StatusCode.ERROR) {
-                  return Center(
-                    child: Text('${categoryProvider.categories.message}'),
-                  );
-                } else {
-                  return const Center(
-                    child: Text('No data'),
-                  );
-                }
-              },
-            ),
-            GestureDetector(
-              onTap: () {
-                showModalBottomSheet(
-                  context: context,
-                  builder: (context) {
-                    return BottomSheet(
-                      onClosing: () {},
-                      builder: (context) {
-                        return const Column(
-                          children: [Text('Ahmed')],
-                        );
-                      },
-                    );
-                  },
-                );
-              },
-              child: Container(
-                height: 50,
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                ),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 16,
-                      backgroundColor: kLightPrimaryColor,
-                      child: Icon(
-                        Icons.add,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 16,
-                    ),
-                    Text(
-                      'New Inbox ',
-                      textAlign: TextAlign.start,
-                      style: GoogleFonts.poppins(
-                          fontSize: 20.sp, color: kLightPrimaryColor),
-                    ),
-                  ],
-                ),
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Padding(
+                padding: EdgeInsets.all(15),
+                child: ConsumerStatusProvider(),
               ),
-            )
-          ],
+              SizedBox(
+                height: 23.h,
+              ),
+              Consumer2<CategoryProvider, MailProvider>(
+                  builder: (context, catValue, mailsValue, child) {
+                if (catValue.state == CategoryState.Loading) {
+                  return categoriesShimmer();
+                }
+                if (catValue.state == CategoryState.Error) {
+                  return categoriesShimmer();
+                }
+
+                final categories = catValue.category;
+
+                if (categories != null &&
+                    catValue.state == CategoryState.Loaded) {
+                  return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        List<Mails> filteredMails = [];
+
+                        if (mailsValue.state == MailsState.Loaded) {
+                          final mails = mailsValue.allMails;
+                          filteredMails = mails!.where((e) {
+                            return e.sender?.category!.name ==
+                                categories[index].name;
+                          }).toList();
+
+                          return CustomExpansionTile(
+                              title: categories[index].name!,
+                              count: filteredMails.length.toString(),
+                              child: ListView.separated(
+                                itemCount: filteredMails.length,
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return ContentExpansionTile(
+                                    color: filteredMails[index].status != null
+                                        ? int.parse(
+                                            filteredMails[index].status!.color!)
+                                        : 0xff214283,
+                                    title: filteredMails[index].sender!.name!,
+                                    date: filteredMails[index].createdAt!,
+                                    subject: filteredMails[index].subject!,
+                                    description:
+                                        filteredMails[index].description,
+                                    tags: filteredMails[index]
+                                        .tags!
+                                        .map((e) => '#${e.name}   ')
+                                        .toList()
+                                        .join()
+                                        .toString(),
+                                    photoList: const SizedBox(),
+                                  );
+                                },
+                                separatorBuilder: (context, index) =>
+                                    const Divider(
+                                  color: Colors.grey,
+                                ),
+                              ));
+                        }
+                        return const SizedBox();
+                      });
+                } else {
+                  return categoriesShimmer();
+                }
+              }),
+              GestureDetector(
+                onTap: () {
+                  showModalBottomSheet(
+                    context: context,
+                    builder: (context) {
+                      return BottomSheet(
+                        onClosing: () {},
+                        builder: (context) {
+                          return const Column(
+                            children: [Text('Ahmed')],
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+                child: Container(
+                  height: 50,
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(10),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 16,
+                        backgroundColor: kLightPrimaryColor,
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 16,
+                      ),
+                      Text(
+                        'New Inbox ',
+                        textAlign: TextAlign.start,
+                        style: GoogleFonts.poppins(
+                            fontSize: 20.sp, color: kLightPrimaryColor),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
+  }
+
+  Shimmer categoriesShimmer() {
+    return Shimmer.fromColors(
+        baseColor: Colors.grey.shade300,
+        highlightColor: Colors.grey.shade100,
+        child: ListView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: 4,
+          itemBuilder: (context, index) {
+            return Container(
+                margin: const EdgeInsets.all(8),
+                color: Colors.red,
+                width: double.infinity,
+                height: 50,
+                child: Container(width: double.infinity));
+          },
+        ));
   }
 
   PopupMenuButton<String> buildPopupMenuButton() {
@@ -224,7 +244,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
       onSelected: (String value) {
         setState(() {
-          _content = value;
+          content = value;
         });
       },
       itemBuilder: (context) {
