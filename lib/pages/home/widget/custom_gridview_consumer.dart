@@ -40,7 +40,7 @@ class ConsumerStatusProvider extends StatelessWidget {
                       offset: Offset(0, 5.h),
                       blurRadius: 3.sp)
                 ],
-                borderRadius: BorderRadius.circular(30.r),
+                borderRadius: BorderRadius.circular(29.r),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
