@@ -3,8 +3,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-import '../../../core/helper/api_response.dart';
 import '../../../provider/status_provider.dart';
+
 class ConsumerStatusProvider extends StatelessWidget {
   const ConsumerStatusProvider({
     super.key,
@@ -13,12 +13,14 @@ class ConsumerStatusProvider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<StatusProvider>(builder: (_, statusProvider, __) {
-      if (statusProvider.status.status == StatusCode.LOADING) {
+      if (statusProvider.state == StatusesState.Loading) {
         return const Center(
           child: CircularProgressIndicator(),
         );
-      } else if (statusProvider.status.status ==
-          StatusCode.COMPLETED) {
+      }
+      final statuses = statusProvider.statuses;
+
+      if (statuses != null && statusProvider.state == StatusesState.Loaded) {
         return GridView.builder(
           physics: const ClampingScrollPhysics(),
           shrinkWrap: true,
@@ -29,8 +31,7 @@ class ConsumerStatusProvider extends StatelessWidget {
               mainAxisSpacing: 16.r),
           itemBuilder: (context, index) {
             return Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: 10.h, horizontal: 15.w),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
               decoration: BoxDecoration(
                 color: Colors.white,
                 boxShadow: [
@@ -50,29 +51,29 @@ class ConsumerStatusProvider extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 10.r,
-                        backgroundColor: Color(int.parse(
-                            statusProvider
-                                .status.data![index].color!)),
+                        backgroundColor:
+                            Color(int.parse(statuses[index].color!)),
                       ),
                       Text(
-                        '${statusProvider.status.data![index].id}',
+                        '${statuses[index].id}',
                         style: GoogleFonts.poppins(fontSize: 19.sp),
                       ),
                     ],
                   ),
                   Text(
-                    statusProvider.status.data![index].name!,
+                    statuses[index].name!,
                     style: GoogleFonts.poppins(fontSize: 19.sp),
                   ),
                 ],
               ),
             );
           },
-          itemCount: 4,
+          itemCount: statuses.length,
         );
-      } else if (statusProvider.status.status == StatusCode.ERROR) {
+      }
+      if (statusProvider.state == StatusesState.Error) {
         return Center(
-          child: Text('${statusProvider.status.message}'),
+          child: Text(statusProvider.state.name),
         );
       } else {
         return const Center(

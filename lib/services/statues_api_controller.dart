@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:consultation_app/core/helper/response_model.dart';
 import 'package:consultation_app/core/utils/constants.dart';
 import 'package:consultation_app/model/statues.dart' ;
 import 'package:http/http.dart' as http;
@@ -9,7 +10,7 @@ import '../core/helper/shared_perf.dart';
 import '../model/user.dart';
 
 class StatuesApiController {
-  Future<List<Statuses>> getAllStatues() async {
+  Future<ResponseModel> getAllStatues() async {
     final userAuth = userFromJson(SharedPerfController().userAuth);
 
     Uri uri = Uri.parse(statusesUrl);
@@ -20,9 +21,10 @@ class StatuesApiController {
     print(response.statusCode);
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
-      var jsonArray = jsonResponse['statuses'] as List;
-      return jsonArray.map((e) => Statuses.fromJson(e)).toList();
+      var getStatus = AllStatuses.fromJson(jsonResponse);
+
+      return ResponseModel(data: getStatus,message: 'success');
     }
-    return [];
+    return ResponseModel(message: 'failed');
   }
 }
