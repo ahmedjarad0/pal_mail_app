@@ -48,15 +48,18 @@ class ContentExpansionTile extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                  Expanded(
+                    child: Text(
+                      title,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),
                   ),
                   Row(
                     children: [
                       Text(
-                        date,
-                        style: TextStyle(
+                        date, overflow: TextOverflow.ellipsis,
+                        maxLines: 1,
+                        style: TextStyle(overflow: TextOverflow.ellipsis,
                             fontSize: 10, color: Colors.grey.shade500),
                       ),
                       Icon(

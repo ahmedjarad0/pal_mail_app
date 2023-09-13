@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'content_expansion_tile.dart';
 class CustomExpansionTile extends StatefulWidget {
    const CustomExpansionTile({super.key, required this.title, required this.count, required this.child});
   final String title ;
@@ -36,11 +35,14 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
           ],
         ),
         children: [
-          Container(
-            decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(25)),
-            child: widget.child),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 15),
+            child: Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(25)),
+              child: widget.child),
+          ),
         ],
         onExpansionChanged: (value) {
           setState(() {
