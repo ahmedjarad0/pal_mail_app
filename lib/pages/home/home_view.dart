@@ -18,7 +18,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../provider/status_provider.dart';
-import '../widgets/custom_action_chip.dart';
 import 'widget/advance_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -31,6 +30,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> with Helper {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  GlobalKey<RefreshIndicatorState>();
   final _advancedDrawerController = AdvancedDrawerController();
   String content = '1';
 
@@ -89,80 +90,90 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                 width: 15.w,
               ),
             ]),
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const ConsumerStatusProvider(),
-              SizedBox(
-                height: 23.h,
-              ),
-              //TODO: Consumer with CategoryProvider & MailProvider
-              const ConsumerExpansionTile(),
-              SizedBox(
-                height: 16.h,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25),
-                child: Text(
-                  'Tags',
-                  style: Style.kTextStyle.copyWith(fontSize: 20.sp),
-                ),
-              ),
-              SizedBox(
-                height: 17.sp,
-              ),
-              //TODO: Consumer with TagsProvider
-              const ConsumerTags(),
+        body: SafeArea(
+          child: RefreshIndicator(onRefresh:()async{
+            Provider.of<StatusProvider>(context, listen: false).getStatus();
+            Provider.of<CategoryProvider>(context, listen: false).getAllCategory();
+            Provider.of<MailProvider>(context, listen: false).getAllMails();
+            Provider.of<TagProvider>(context, listen: false).getAllTags();
 
-              GestureDetector(
-                onTap: () {
-                  showModalBottomSheet(
-                    context: context,
-                    builder: (context) {
-                      return BottomSheet(
-                        onClosing: () {},
+          } ,key: _refreshIndicatorKey,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const ConsumerStatusProvider(),
+                  SizedBox(
+                    height: 23.h,
+                  ),
+                  //TODO: Consumer with CategoryProvider & MailProvider
+                  const ConsumerExpansionTile(),
+                  SizedBox(
+                    height: 16.h,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25),
+                    child: Text(
+                      'Tags',
+                      style: Style.kTextStyle.copyWith(fontSize: 20.sp),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 17.sp,
+                  ),
+                  //TODO: Consumer with TagsProvider
+                  const ConsumerTags(),
+
+                  GestureDetector(
+                    onTap: () {
+                      showModalBottomSheet(
+                        context: context,
                         builder: (context) {
-                          return const Column(
-                            children: [Text('Ahmed')],
+                          return BottomSheet(
+                            onClosing: () {},
+                            builder: (context) {
+                              return const Column(
+                                children: [Text('Ahmed')],
+                              );
+                            },
                           );
                         },
                       );
                     },
-                  );
-                },
-                child: Container(
-                  height: 50,
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(10),
-                  decoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 16,
-                        backgroundColor: kLightPrimaryColor,
-                        child: Icon(
-                          Icons.add,
-                          color: Colors.white,
-                          size: 30,
-                        ),
+                    child: Container(
+                      height: 50,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
                       ),
-                      const SizedBox(
-                        width: 16,
+                      child: Row(
+                        children: [
+                          const CircleAvatar(
+                            radius: 16,
+                            backgroundColor: kLightPrimaryColor,
+                            child: Icon(
+                              Icons.add,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 16,
+                          ),
+                          Text(
+                            'New Inbox ',
+                            textAlign: TextAlign.start,
+                            style: GoogleFonts.poppins(
+                                fontSize: 20.sp, color: kLightPrimaryColor),
+                          ),
+                        ],
                       ),
-                      Text(
-                        'New Inbox ',
-                        textAlign: TextAlign.start,
-                        style: GoogleFonts.poppins(
-                            fontSize: 20.sp, color: kLightPrimaryColor),
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
+                    ),
+                  )
+                ],
+              ),
+            ),
           ),
         ),
       ),
