@@ -1,4 +1,4 @@
-name: pal_mail_app
+name: consultation_app
 description: A new Flutter project.
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -46,6 +46,8 @@ dependencies:
   provider: ^6.0.5
   shimmer:
   intl: ^0.18.1
+  image_picker: ^1.0.4
+  font_awesome_flutter: ^10.5.0
 dev_dependencies:
   flutter_test:
     sdk: flutter

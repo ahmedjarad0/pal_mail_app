@@ -56,7 +56,6 @@ class AuthApiController with Helper {
     var response = await http.post(uri, headers: {
       HttpHeaders.authorizationHeader: 'Bearer ${userAuth.token}',
     });
-    print(response.body);
     print(response.statusCode);
     if (response.statusCode == 200 || response.statusCode == 401) {
       var jsonResponse = jsonDecode(response.body);

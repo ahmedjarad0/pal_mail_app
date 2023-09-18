@@ -1,9 +1,10 @@
+import 'package:consultation_app/pages/home/widget/custom_status_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 import '../../../provider/status_provider.dart';
+import '../../widgets/custom_shimmer.dart';
 
 class ConsumerStatusProvider extends StatelessWidget {
   const ConsumerStatusProvider({
@@ -14,13 +15,11 @@ class ConsumerStatusProvider extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<StatusProvider>(builder: (_, statusProvider, __) {
       if (statusProvider.state == StatusesState.Loading) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
+        return const GridShimmer();
       }
       final statuses = statusProvider.statuses;
 
-      if (statuses != null && statusProvider.state == StatusesState.Loaded) {
+      if (statuses != null && statusProvider.state == StatusesState.Complete) {
         return Padding(
           padding: const EdgeInsets.all(15),
           child: GridView.builder(
@@ -32,56 +31,19 @@ class ConsumerStatusProvider extends StatelessWidget {
                 childAspectRatio: 181.w / 90.h,
                 mainAxisSpacing: 16.r),
             itemBuilder: (context, index) {
-              return Container(
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black12,
-                        offset: Offset(0, 5.h),
-                        blurRadius: 3.sp)
-                  ],
-                  borderRadius: BorderRadius.circular(29.r),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        CircleAvatar(
-                          radius: 8.r,
-                          backgroundColor:
-                              Color(int.parse(statuses[index].color!)),
-                        ),
-                        Text(
-                          '${statuses[index].id}',
-                          style: GoogleFonts.poppins(fontSize: 16.sp),
-                        ),
-                      ],
-                    ),
-                    Text(
-                      statuses[index].name!,
-                      style: GoogleFonts.poppins(fontSize: 14.sp),
-                    ),
-                  ],
-                ),
-              );
+              return StatusCard(
+                  title: statuses[index].name!,
+                  color: int.parse(statuses[index].color!),
+                  idCount: statuses[index].id!.toString());
             },
             itemCount: statuses.length,
           ),
         );
       }
       if (statusProvider.state == StatusesState.Error) {
-        return Center(
-          child: Text(statusProvider.state.name),
-        );
+        return const GridShimmer();
       } else {
-        return const Center(
-          child: Text('No data'),
-        );
+        return const GridShimmer();
       }
     });
   }

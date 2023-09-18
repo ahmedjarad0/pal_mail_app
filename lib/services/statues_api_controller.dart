@@ -19,6 +19,7 @@ class StatuesApiController {
     });
     print(response.body);
     print(response.statusCode);
+    print(response.statusCode);
     if (response.statusCode == 200) {
       var jsonResponse = jsonDecode(response.body);
       var getStatus = AllStatuses.fromJson(jsonResponse);

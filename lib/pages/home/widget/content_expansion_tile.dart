@@ -73,7 +73,7 @@ class ContentExpansionTile extends StatelessWidget {
               ),
               Text(
                 subject,
-                style: TextStyle(fontSize: 12),
+                style: const TextStyle(fontSize: 12),
               ),
               if (description != null)
                 Text(

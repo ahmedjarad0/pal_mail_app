@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class CustomExpansionTile extends StatefulWidget {
-   const CustomExpansionTile({super.key, required this.title, required this.count, required this.child});
+   const CustomExpansionTile({super.key, required this.title,  this.count, required this.child});
   final String title ;
-  final String count;
+  final String? count;
   final Widget child ;
   @override
   State<CustomExpansionTile> createState() => _CustomExpansionTileState();
@@ -22,9 +22,12 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-             Text(widget.count),
+             Text(widget.count!),
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+             setState(() {
+             });
+              },
               icon: Icon(_customExpandedTile
                   ? Icons.keyboard_arrow_down
                   : Icons.keyboard_arrow_up),
@@ -36,8 +39,9 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
         ),
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 0,horizontal: 15),
+            padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Container(
+
               decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(25)),

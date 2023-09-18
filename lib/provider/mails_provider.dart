@@ -2,7 +2,7 @@ import 'package:consultation_app/services/mail_api_controller.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../model/mail.dart';
-enum MailsState { Initial, Loading, Loaded, Error }
+enum MailsState { Initial, Loading, Complete, Error }
 
 class MailProvider extends ChangeNotifier {
   MailsState _state = MailsState.Initial ;
@@ -19,15 +19,19 @@ class MailProvider extends ChangeNotifier {
 
   Future<void> getAllMails() async {
     _state = MailsState.Loading ;
+    notifyListeners();
+
     try {
       final repo = await _mailApiController.getAllMails();
       _mails = repo.data.mails;
-      _state = MailsState.Loaded ;
+      _state = MailsState.Complete ;
+      notifyListeners();
 
     } catch (e) {
       _state = MailsState.Error ;
+      notifyListeners();
+
     }
-    notifyListeners();
 
   }
 }

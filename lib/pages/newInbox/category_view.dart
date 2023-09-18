@@ -1,16 +1,18 @@
+import 'package:consultation_app/provider/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class CategoryView extends StatefulWidget {
-  const CategoryView({super.key});
-
+  const CategoryView({super.key,  this.indexCategory, });
+final int ?indexCategory ;
   @override
   State<CategoryView> createState() => _CategoryViewState();
 }
 
 class _CategoryViewState extends State<CategoryView> {
-  int? selectedIndex;
+ late int? selectedIndex  =widget.indexCategory;
 
   @override
   Widget build(BuildContext context) {
@@ -53,49 +55,74 @@ class _CategoryViewState extends State<CategoryView> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              height: 170,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30.r),
-              ),
-              child: ListView.separated(
-                physics: const NeverScrollableScrollPhysics(),
-                separatorBuilder: (context, index) {
-                  return const Divider(
-                    thickness: 1,
-                    height: 20,
-                  );
-                },
-                shrinkWrap: true,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      setState(() {
-                        selectedIndex = index;
-                      });
-                    },
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Official organization',
-                            style: GoogleFonts.poppins(fontSize: 16.sp),
-                          ),
-                          selectedIndex == index
-                              ? const Icon(
-                                  Icons.check,
-                                  color: Colors.blue,
-                                  size: 20,
-                                )
-                              : const SizedBox(),
-                        ]),
-                  );
-                },
-              ),
-            )
+                height: 170,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(30.r),
+                ),
+                child: Consumer<CategoryProvider>(
+                  builder: (context, categoryProvider, child) {
+                    if (categoryProvider.state == CategoryState.Loading) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    if (categoryProvider.state == CategoryState.Error) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                    final category = categoryProvider.category;
+                    if (category != null &&
+                        categoryProvider.state == CategoryState.Complete) {
+                      return ListView.separated(
+
+                        physics: const NeverScrollableScrollPhysics(),
+                        separatorBuilder: (context, index) {
+                          return const Divider(
+                            thickness: 1,
+                            height: 20,
+                          );
+                        },
+                        shrinkWrap: true,
+                        itemCount: category.length,
+                        itemBuilder: (context, index) {
+                          return InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = category[index].id!;
+
+                              });
+                            },
+                            child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    category[index].name!,
+                                    style: GoogleFonts.poppins(fontSize: 16.sp),
+                                  ),
+                                  selectedIndex == category[index].id
+                                      ? const Icon(
+                                          Icons.check,
+                                          color: Colors.blue,
+                                          size: 20,
+                                        )
+                                      : const SizedBox(),
+                                ]),
+                          );
+                        },
+                      );
+                    } else {
+                      return const Center(
+                        child: Text('No Data'),
+                      );
+                    }
+                  },
+                ))
           ],
         ),
       ),

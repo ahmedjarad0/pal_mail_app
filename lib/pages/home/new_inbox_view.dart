@@ -1,11 +1,19 @@
+import 'dart:io';
+
 import 'package:consultation_app/core/utils/constants.dart';
 import 'package:consultation_app/pages/newInbox/category_view.dart';
+import 'package:consultation_app/pages/newInbox/status_view.dart';
 import 'package:consultation_app/pages/newInbox/tag_view.dart';
 import 'package:consultation_app/pages/widgets/custom_show_model_bottom.dart';
+import 'package:consultation_app/provider/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/custom_textfield_new_index.dart';
 
@@ -20,11 +28,17 @@ class NewInbox extends StatefulWidget {
 
 class _NewInboxState extends State<NewInbox> {
   late TextEditingController _dateCtr;
+  late ImagePicker _imagePicker;
+  XFile? _pickedImage;
+  bool _expansionChanged = false;
+  int? categoryId;
 
   @override
   void initState() {
     // TODO: implement initState
     _dateCtr = TextEditingController();
+    _imagePicker = ImagePicker();
+
     super.initState();
   }
 
@@ -69,6 +83,7 @@ class _NewInboxState extends State<NewInbox> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24),
         child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -90,11 +105,16 @@ class _NewInboxState extends State<NewInbox> {
                           onPressed: () {},
                         )),
                     const Divider(thickness: 1, indent: 20, endIndent: 20),
-                    CustomShowModelBottom(
-                      builder: (context, scroll) {
-                        return const CategoryView();
+                    GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        _showCategoryBottomSheet(context).then((value) {
+                          setState(() {
+                            categoryId = value;
+                          });
+                        });
                       },
-                      childModel: Row(
+                      child: Row(
                         children: [
                           SizedBox(
                             width: 15.w,
@@ -121,7 +141,7 @@ class _NewInboxState extends State<NewInbox> {
                           )
                         ],
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -160,6 +180,7 @@ class _NewInboxState extends State<NewInbox> {
                   child: Column(
                     children: [
                       CustomTextFieldNewIndex(
+                          hintText: 'MM-dd-yyyy',
                           labelText: 'Date',
                           prefixIcon: const Icon(
                             Icons.date_range_outlined,
@@ -194,42 +215,40 @@ class _NewInboxState extends State<NewInbox> {
               SizedBox(
                 height: 19.h,
               ),
-              CustomShowModelBottom(
-                builder: (p0, p1) {
-                  return const TagView();
-                },
-                childModel: Container(
-                    height: 50,
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(30.r),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.tag,
-                          size: 16,
-                        ),
-                        Text(
-                          '  Tags',
-                          style: GoogleFonts.poppins(fontSize: 14),
-                        ),
-                        const Spacer(),
-                        const Icon(
-                          Icons.arrow_forward_ios,
-                          size: 15,
-                          color: Colors.grey,
-                        )
-                      ],
-                    )),
-              ),
+              GestureDetector(onTap: (){
+                _showTagsBottomSheet(context);
+              },child: Container(
+                  height: 50,
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(30.r),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.tag,
+                        size: 16,
+                      ),
+                      Text(
+                        '  Tags',
+                        style: GoogleFonts.poppins(fontSize: 14),
+                      ),
+                      const Spacer(),
+                      const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 15,
+                        color: Colors.grey,
+                      )
+                    ],
+                  )),),
+
               SizedBox(
                 height: 12.h,
               ),
               CustomShowModelBottom(
                 builder: (p0, p1) {
-                  return SizedBox();
+                  return const StatusView();
                 },
                 childModel: Container(
                     height: 50,
@@ -245,15 +264,19 @@ class _NewInboxState extends State<NewInbox> {
                           color: Colors.black45,
                           size: 15,
                         ),
-                        SizedBox(width: 10.w,),
+                        SizedBox(
+                          width: 10.w,
+                        ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10,vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 3),
                           decoration: BoxDecoration(
                               color: const Color(0xffFA3A57),
                               borderRadius: BorderRadius.circular(30.r)),
                           child: Text(
                             'Inbox',
-                            style: GoogleFonts.poppins(fontSize: 12,color: Colors.white),
+                            style: GoogleFonts.poppins(
+                                fontSize: 12, color: Colors.white),
                           ),
                         ),
                         const Spacer(),
@@ -261,15 +284,187 @@ class _NewInboxState extends State<NewInbox> {
                           Icons.arrow_forward_ios,
                           size: 15,
                           color: Colors.grey,
-                        )
+                        ),
                       ],
                     )),
+              ),
+              SizedBox(
+                height: 12.h,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.r),
+                    color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Decision',
+                      style: GoogleFonts.poppins(
+                          fontSize: 16.sp, color: kLightPrimaryColor),
+                    ),
+                    CustomTextFieldNewIndex(
+                      hintText: 'Add Decision…',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14.sp,
+                        height: 1,
+                        color: Colors.black87,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 16.h,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 10.h),
+                width: double.infinity,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30.r),
+                    color: Colors.white),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Add Image',
+                      style: GoogleFonts.poppins(
+                        fontSize: 14.sp,
+                        color: kLightPrimaryColor,
+                      ),
+                    ),
+                    _pickedImage == null
+                        ? ElevatedButton(
+                            onPressed: () {
+                              _pickImage();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                minimumSize: const Size(40, 15),
+                                padding: EdgeInsets.zero),
+                            child: const Icon(
+                              Icons.add,
+                              size: 18,
+                            ),
+                          )
+                        : Image.file(File(_pickedImage!.path)),
+                  ],
+                ),
+              ),
+              Theme(
+                data: ThemeData().copyWith(dividerColor: Colors.transparent),
+                child: ExpansionTile(
+                  title: const Text('Activity'),
+                  onExpansionChanged: (value) {
+                    setState(() {
+                      _expansionChanged = value;
+                    });
+                  },
+                  children: [
+                    Container(
+                        height: 45,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 3, vertical: 5),
+                        decoration: BoxDecoration(
+                            color: const Color(0xffEEEEF6),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: CustomTextFieldNewIndex(
+                          hintText: 'Add new Activity …',
+                          style: GoogleFonts.poppins(
+                              fontSize: 14, color: Colors.black87),
+                          prefixIcon: CircleAvatar(
+                              backgroundColor: Colors.transparent,
+                              child: SvgPicture.asset(
+                                manImage,
+                                height: 15,
+                                width: 15,
+                              )),
+                          suffixIcon: IconButton(
+                              highlightColor: Colors.transparent,
+                              splashColor: Colors.transparent,
+                              onPressed: () {},
+                              icon: const FaIcon(
+                                FontAwesomeIcons.paperPlane,
+                                size: 16,
+                              )),
+                        ))
+                  ],
+                ),
               )
             ],
           ),
         ),
       ),
     );
+  }
+  Future<dynamic> _showTagsBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            color: const Color.fromRGBO(0, 0, 0, 0.001),
+            child: GestureDetector(
+              onTap: () {},
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.92,
+                maxChildSize: 0.92,
+                builder: (_, controller) {
+                  return Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(25)),
+                      ),
+                      child: const TagView());
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((value) => value);
+  }
+  Future<dynamic> _showCategoryBottomSheet(BuildContext context) {
+    return showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            color: const Color.fromRGBO(0, 0, 0, 0.001),
+            child: GestureDetector(
+              onTap: () {},
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.92,
+                maxChildSize: 0.92,
+                builder: (_, controller) {
+                  return Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        borderRadius:
+                            BorderRadius.vertical(top: Radius.circular(25)),
+                      ),
+                      child: const CategoryView());
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((value) => value);
   }
 
   void _pickData() async {
@@ -282,6 +477,16 @@ class _NewInboxState extends State<NewInbox> {
     if (dateTime != null) {
       String format = DateFormat('EEEE, MMM d ,y ').format(dateTime);
       _dateCtr.text = format;
+    }
+  }
+
+  void _pickImage() async {
+    XFile? imageFile =
+        await _imagePicker.pickImage(source: ImageSource.gallery);
+    if (imageFile != null) {
+      setState(() {
+        _pickedImage = imageFile;
+      });
     }
   }
 }

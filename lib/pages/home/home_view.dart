@@ -1,6 +1,7 @@
 import 'package:consultation_app/core/helper/api_helper.dart';
 import 'package:consultation_app/core/helper/mixin_helper.dart';
 import 'package:consultation_app/core/utils/constants.dart';
+import 'package:consultation_app/pages/home/new_inbox_view.dart';
 import 'package:consultation_app/pages/home/search_view.dart';
 import 'package:consultation_app/pages/home/widget/consumer_expansion_tile.dart';
 import 'package:consultation_app/pages/home/widget/consumer_gridview.dart';
@@ -31,7 +32,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> with Helper {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
+      GlobalKey<RefreshIndicatorState>();
   final _advancedDrawerController = AdvancedDrawerController();
   String content = '1';
 
@@ -91,13 +92,15 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
               ),
             ]),
         body: SafeArea(
-          child: RefreshIndicator(onRefresh:()async{
-            Provider.of<StatusProvider>(context, listen: false).getStatus();
-            Provider.of<CategoryProvider>(context, listen: false).getAllCategory();
-            Provider.of<MailProvider>(context, listen: false).getAllMails();
-            Provider.of<TagProvider>(context, listen: false).getAllTags();
-
-          } ,key: _refreshIndicatorKey,
+          child: RefreshIndicator(
+            onRefresh: () async {
+              Provider.of<StatusProvider>(context, listen: false).getStatus();
+              Provider.of<CategoryProvider>(context, listen: false)
+                  .getAllCategory();
+              Provider.of<MailProvider>(context, listen: false).getAllMails();
+              Provider.of<TagProvider>(context, listen: false).getAllTags();
+            },
+            key: _refreshIndicatorKey,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,14 +130,22 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                   GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
+                        isScrollControlled: true,
+                        useSafeArea: true,
+                        clipBehavior: Clip.antiAlias,
+                        shape: RoundedRectangleBorder(
+                            borderRadius:BorderRadius.vertical(
+                        top: Radius.circular(30.r),
+                      ),),
                         context: context,
                         builder: (context) {
-                          return BottomSheet(
-                            onClosing: () {},
-                            builder: (context) {
-                              return const Column(
-                                children: [Text('Ahmed')],
-                              );
+                          return DraggableScrollableSheet(
+                            initialChildSize: 0.99,
+                            maxChildSize: 0.99,
+                            minChildSize: 0.99,
+                            expand: true,
+                            builder: (context, scrollController) {
+                              return const NewInbox();
                             },
                           );
                         },
@@ -286,4 +297,3 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
     return apiHelper;
   }
 }
-

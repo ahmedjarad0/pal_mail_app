@@ -17,7 +17,7 @@ class CustomTextField extends StatelessWidget {
 
   final IconData? prefixIcon;
 
-  final IconData? suffixIcon;
+  final Widget? suffixIcon;
   final   Function()? onPressedIcon ;
   @override
   Widget build(BuildContext context) {
@@ -44,8 +44,7 @@ class CustomTextField extends StatelessWidget {
           ),
           hintText: hintText,
           hintStyle: GoogleFonts.poppins(color: const Color(0xffAFAFAF)),
-          suffixIcon: IconButton(
-              onPressed: onPressedIcon, icon:  Icon(suffixIcon))),
+          suffixIcon: suffixIcon),
     );
   }
 }

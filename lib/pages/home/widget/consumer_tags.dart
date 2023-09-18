@@ -1,3 +1,4 @@
+import 'package:consultation_app/pages/widgets/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -22,13 +23,11 @@ class ConsumerTags extends StatelessWidget {
       child: Consumer<TagProvider>(
         builder: (context, tagProvider, child) {
           if (tagProvider.statues == TagStatues.Loading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const TagsShimmer();
           }
           final tags = tagProvider.tag;
           if (tags != null &&
-              tagProvider.statues == TagStatues.Loaded) {
+              tagProvider.statues == TagStatues.Complete) {
             return Wrap(
               spacing: 8,
               children: [
@@ -42,13 +41,9 @@ class ConsumerTags extends StatelessWidget {
             );
           }
           if (tagProvider.statues == TagStatues.Error) {
-            return const Center(
-              child: Text('Error Data'),
-            );
+            return const TagsShimmer();
           } else {
-            return const Center(
-              child: Text('No Data'),
-            );
+            return const TagsShimmer();
           }
         },
       ),

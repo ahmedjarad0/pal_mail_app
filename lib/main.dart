@@ -8,6 +8,7 @@ import 'package:consultation_app/pages/splash_view.dart';
 import 'package:consultation_app/provider/category_provider.dart';
 import 'package:consultation_app/provider/mails_provider.dart';
 import 'package:consultation_app/provider/status_provider.dart';
+import 'package:consultation_app/provider/tag_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,11 +39,12 @@ class MyApp extends StatelessWidget {
               create: (context) => CategoryProvider(),
             ),ChangeNotifierProvider<MailProvider>(
               create: (context) => MailProvider(),
+            ),ChangeNotifierProvider<TagProvider>(
+              create: (context) => TagProvider(),
             ),
           ],
           child: MaterialApp(
             theme: ThemeData(
-                useMaterial3: true,
                 scaffoldBackgroundColor: kScaffoldColor,
                 appBarTheme: AppBarTheme(
                     iconTheme: const IconThemeData(color: Colors.black),
