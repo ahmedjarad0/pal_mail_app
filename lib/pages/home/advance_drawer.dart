@@ -3,7 +3,7 @@ import 'package:flutter_advanced_drawer/flutter_advanced_drawer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../../core/utils/constants.dart';
+import '../../core/utils/constants.dart';
 class AdvanceDrawer extends StatelessWidget {
   const  AdvanceDrawer({
     super.key,

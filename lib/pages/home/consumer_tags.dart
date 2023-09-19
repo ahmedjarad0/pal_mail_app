@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../provider/tag_provider.dart';
-import '../../widgets/custom_action_chip.dart';
+import '../../provider/tag_provider.dart';
+import '../widgets/custom_action_chip.dart';
+
 class ConsumerTags extends StatelessWidget {
   const ConsumerTags({
     super.key,
@@ -15,19 +16,16 @@ class ConsumerTags extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.all(18),
-      margin:
-      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(30.r)),
+          color: Colors.white, borderRadius: BorderRadius.circular(30.r)),
       child: Consumer<TagProvider>(
         builder: (context, tagProvider, child) {
           if (tagProvider.statues == TagStatues.Loading) {
             return const TagsShimmer();
           }
           final tags = tagProvider.tag;
-          if (tags != null &&
-              tagProvider.statues == TagStatues.Complete) {
+          if (tags != null && tagProvider.statues == TagStatues.Complete) {
             return Wrap(
               spacing: 8,
               children: [
@@ -50,4 +48,3 @@ class ConsumerTags extends StatelessWidget {
     );
   }
 }
-

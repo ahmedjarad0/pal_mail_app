@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class CategoryView extends StatefulWidget {
+  static String id = '/category_view';
   const CategoryView({super.key,  this.indexCategory, });
 final int ?indexCategory ;
   @override

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../core/utils/constants.dart';
 class CustomActionChip extends StatelessWidget {
@@ -13,9 +14,9 @@ class CustomActionChip extends StatelessWidget {
     return ActionChip(
         label: Text(
           titleTag,
-          style: Style.kTextStyle.copyWith(
-              fontSize: 12, color: Colors.grey.shade600),
-        ),
+
+          style: GoogleFonts.poppins(
+            fontSize: 12.sp, color: Colors.grey.shade600), ),
         backgroundColor: Colors.grey.shade200,
         disabledColor: Colors.grey.shade200,
         side: BorderSide.none,

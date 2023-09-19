@@ -1,9 +1,11 @@
 import 'package:consultation_app/core/helper/shared_perf.dart';
 import 'package:consultation_app/core/utils/constants.dart';
 import 'package:consultation_app/pages/home/home_view.dart';
-import 'package:consultation_app/pages/home/new_inbox_view.dart';
+import 'package:consultation_app/pages/newInbox/category_view.dart';
+import 'package:consultation_app/pages/newInbox/new_inbox_view.dart';
 import 'package:consultation_app/pages/home/search_view.dart';
 import 'package:consultation_app/pages/auth/tab_bar_view.dart';
+import 'package:consultation_app/pages/newInbox/status_view.dart';
 import 'package:consultation_app/pages/splash_view.dart';
 import 'package:consultation_app/provider/category_provider.dart';
 import 'package:consultation_app/provider/mails_provider.dart';
@@ -61,6 +63,8 @@ class MyApp extends StatelessWidget {
               HomeScreen.id: (context) => const HomeScreen(),
               SearchView.id: (context) => const SearchView(),
               NewInbox.id: (context) => const NewInbox(),
+              StatusView.id: (context) => const StatusView(),
+              CategoryView.id: (context) => const CategoryView(),
             },
           ),
         );

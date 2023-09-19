@@ -1,11 +1,11 @@
 import 'package:consultation_app/core/helper/api_helper.dart';
 import 'package:consultation_app/core/helper/mixin_helper.dart';
 import 'package:consultation_app/core/utils/constants.dart';
-import 'package:consultation_app/pages/home/new_inbox_view.dart';
+import 'package:consultation_app/pages/newInbox/new_inbox_view.dart';
 import 'package:consultation_app/pages/home/search_view.dart';
-import 'package:consultation_app/pages/home/widget/consumer_expansion_tile.dart';
-import 'package:consultation_app/pages/home/widget/consumer_gridview.dart';
-import 'package:consultation_app/pages/home/widget/consumer_tags.dart';
+import 'package:consultation_app/pages/home/consumer_expansion_tile.dart';
+import 'package:consultation_app/pages/home/consumer_gridview.dart';
+import 'package:consultation_app/pages/home/consumer_tags.dart';
 import 'package:consultation_app/pages/splash_view.dart';
 import 'package:consultation_app/provider/category_provider.dart';
 import 'package:consultation_app/provider/mails_provider.dart';
@@ -19,7 +19,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import '../../provider/status_provider.dart';
-import 'widget/advance_drawer.dart';
+import 'advance_drawer.dart';
 
 class HomeScreen extends StatefulWidget {
   static String id = '/home_view';
@@ -118,7 +118,8 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                     padding: const EdgeInsets.symmetric(horizontal: 25),
                     child: Text(
                       'Tags',
-                      style: Style.kTextStyle.copyWith(fontSize: 20.sp),
+                      style: GoogleFonts.poppins(
+                          fontSize: 20.sp,),
                     ),
                   ),
                   SizedBox(
@@ -126,30 +127,9 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                   ),
                   //TODO: Consumer with TagsProvider
                   const ConsumerTags(),
-
                   GestureDetector(
                     onTap: () {
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        useSafeArea: true,
-                        clipBehavior: Clip.antiAlias,
-                        shape: RoundedRectangleBorder(
-                            borderRadius:BorderRadius.vertical(
-                        top: Radius.circular(30.r),
-                      ),),
-                        context: context,
-                        builder: (context) {
-                          return DraggableScrollableSheet(
-                            initialChildSize: 0.99,
-                            maxChildSize: 0.99,
-                            minChildSize: 0.99,
-                            expand: true,
-                            builder: (context, scrollController) {
-                              return const NewInbox();
-                            },
-                          );
-                        },
-                      );
+                      _showModelNewIndex(context);
                     },
                     child: Container(
                       height: 50,
@@ -181,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
                         ],
                       ),
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -295,5 +275,38 @@ class _HomeScreenState extends State<HomeScreen> with Helper {
     }
     snackBar(context, message: apiHelper.message, success: apiHelper.success);
     return apiHelper;
+  }
+  Future<dynamic> _showModelNewIndex(BuildContext context) {
+    return showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            color: const Color.fromRGBO(0, 0, 0, 0.001),
+            child: GestureDetector(
+              onTap: () {},
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.95,
+                maxChildSize: 0.95,
+                builder: (_, controller) {
+                  return Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(25)),
+                      ),
+                      child: const NewInbox());
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((value) => value);
   }
 }

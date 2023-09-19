@@ -4,8 +4,6 @@ import 'package:consultation_app/core/utils/constants.dart';
 import 'package:consultation_app/pages/newInbox/category_view.dart';
 import 'package:consultation_app/pages/newInbox/status_view.dart';
 import 'package:consultation_app/pages/newInbox/tag_view.dart';
-import 'package:consultation_app/pages/widgets/custom_show_model_bottom.dart';
-import 'package:consultation_app/provider/category_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,7 +11,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 import '../widgets/custom_textfield_new_index.dart';
 
@@ -32,7 +29,9 @@ class _NewInboxState extends State<NewInbox> {
   XFile? _pickedImage;
   bool _expansionChanged = false;
   int? categoryId;
-
+  int? statusId;
+String name = 'Inbox';
+String color = '0xffFA3A57';
   @override
   void initState() {
     // TODO: implement initState
@@ -51,6 +50,10 @@ class _NewInboxState extends State<NewInbox> {
 
   @override
   Widget build(BuildContext context) {
+    // final route = ModalRoute.of(context)!.settings.arguments as Map<String,dynamic>;
+    // name= route['name'];
+    // color= route['color'];
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -215,42 +218,44 @@ class _NewInboxState extends State<NewInbox> {
               SizedBox(
                 height: 19.h,
               ),
-              GestureDetector(onTap: (){
-                _showTagsBottomSheet(context);
-              },child: Container(
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(30.r),
-                  ),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.tag,
-                        size: 16,
-                      ),
-                      Text(
-                        '  Tags',
-                        style: GoogleFonts.poppins(fontSize: 14),
-                      ),
-                      const Spacer(),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        size: 15,
-                        color: Colors.grey,
-                      )
-                    ],
-                  )),),
-
+              GestureDetector(
+                onTap: () {
+                  _showTagsBottomSheet(context);
+                },
+                child: Container(
+                    height: 50,
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30.r),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.tag,
+                          size: 16,
+                        ),
+                        Text(
+                          '  Tags',
+                          style: GoogleFonts.poppins(fontSize: 14),
+                        ),
+                        const Spacer(),
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          size: 15,
+                          color: Colors.grey,
+                        )
+                      ],
+                    )),
+              ),
               SizedBox(
                 height: 12.h,
               ),
-              CustomShowModelBottom(
-                builder: (p0, p1) {
-                  return const StatusView();
+              GestureDetector(
+                onTap: () {
+                  _showStatusBottomSheet(context);
                 },
-                childModel: Container(
+                child: Container(
                     height: 50,
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
@@ -271,14 +276,16 @@ class _NewInboxState extends State<NewInbox> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 3),
                           decoration: BoxDecoration(
-                              color: const Color(0xffFA3A57),
+                              color:  Color(int.parse(color)),
                               borderRadius: BorderRadius.circular(30.r)),
                           child: Text(
-                            'Inbox',
+                            name,
                             style: GoogleFonts.poppins(
                                 fontSize: 12, color: Colors.white),
                           ),
                         ),
+
+
                         const Spacer(),
                         const Icon(
                           Icons.arrow_forward_ios,
@@ -287,7 +294,10 @@ class _NewInboxState extends State<NewInbox> {
                         ),
                       ],
                     )),
-              ),
+              )
+
+
+              ,
               SizedBox(
                 height: 12.h,
               ),
@@ -337,19 +347,19 @@ class _NewInboxState extends State<NewInbox> {
                     ),
                     _pickedImage == null
                         ? ElevatedButton(
-                            onPressed: () {
-                              _pickImage();
-                            },
-                            style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8)),
-                                minimumSize: const Size(40, 15),
-                                padding: EdgeInsets.zero),
-                            child: const Icon(
-                              Icons.add,
-                              size: 18,
-                            ),
-                          )
+                      onPressed: () {
+                        _pickImage();
+                      },
+                      style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8)),
+                          minimumSize: const Size(40, 15),
+                          padding: EdgeInsets.zero),
+                      child: const Icon(
+                        Icons.add,
+                        size: 18,
+                      ),
+                    )
                         : Image.file(File(_pickedImage!.path)),
                   ],
                 ),
@@ -400,6 +410,7 @@ class _NewInboxState extends State<NewInbox> {
       ),
     );
   }
+
   Future<dynamic> _showTagsBottomSheet(BuildContext context) {
     return showModalBottomSheet(
       shape: const RoundedRectangleBorder(
@@ -433,7 +444,8 @@ class _NewInboxState extends State<NewInbox> {
       },
     ).then((value) => value);
   }
-  Future<dynamic> _showCategoryBottomSheet(BuildContext context) {
+
+  Future<dynamic> _showCategoryBottomSheet(BuildContext context,) {
     return showModalBottomSheet(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
@@ -455,7 +467,7 @@ class _NewInboxState extends State<NewInbox> {
                       clipBehavior: Clip.hardEdge,
                       decoration: const BoxDecoration(
                         borderRadius:
-                            BorderRadius.vertical(top: Radius.circular(25)),
+                        BorderRadius.vertical(top: Radius.circular(25)),
                       ),
                       child: const CategoryView());
                 },
@@ -465,7 +477,40 @@ class _NewInboxState extends State<NewInbox> {
         );
       },
     ).then((value) => value);
+  }  Future<dynamic> _showStatusBottomSheet(BuildContext context,) {
+    return showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return GestureDetector(
+          onTap: () => Navigator.of(context).pop(),
+          child: Container(
+            color: const Color.fromRGBO(0, 0, 0, 0.001),
+            child: GestureDetector(
+              onTap: () {},
+              child: DraggableScrollableSheet(
+                initialChildSize: 0.92,
+                maxChildSize: 0.92,
+                builder: (_, controller) {
+                  return Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: const BoxDecoration(
+                        borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(25)),
+                      ),
+                      child: const StatusView());
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((value) => value);
   }
+
 
   void _pickData() async {
     DateTime? dateTime = await showDatePicker(
@@ -482,7 +527,7 @@ class _NewInboxState extends State<NewInbox> {
 
   void _pickImage() async {
     XFile? imageFile =
-        await _imagePicker.pickImage(source: ImageSource.gallery);
+    await _imagePicker.pickImage(source: ImageSource.gallery);
     if (imageFile != null) {
       setState(() {
         _pickedImage = imageFile;

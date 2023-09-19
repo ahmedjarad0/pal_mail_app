@@ -1,10 +1,10 @@
-import 'package:consultation_app/pages/home/widget/custom_status_card.dart';
+import 'package:consultation_app/pages/home/custom_status_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
-import '../../../provider/status_provider.dart';
-import '../../widgets/custom_shimmer.dart';
+import '../../provider/status_provider.dart';
+import '../widgets/custom_shimmer.dart';
 
 class ConsumerStatusProvider extends StatelessWidget {
   const ConsumerStatusProvider({
@@ -34,7 +34,7 @@ class ConsumerStatusProvider extends StatelessWidget {
               return StatusCard(
                   title: statuses[index].name!,
                   color: int.parse(statuses[index].color!),
-                  idCount: statuses[index].id!.toString());
+                  idCount: statuses[index].mailsCount!.toString());
             },
             itemCount: statuses.length,
           ),

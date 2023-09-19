@@ -1,7 +1,5 @@
 import 'dart:ui';
 
-import 'package:flutter/src/painting/text_style.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 // ****************images************************
 const String palestineAsset = 'assets/img/palestine_bird.png';
@@ -27,8 +25,4 @@ const String tagsUrl = '${baseUrl}tags';
 const String mailsUrl = '${baseUrl}mails';
 const String categoriesUrl = '${baseUrl}categories';
 const String statusesUrl = '${baseUrl}statuses?mail=true';
-// ****************fonts************************
-class Style{
-static  TextStyle kTextStyle = GoogleFonts.poppins(fontWeight: FontWeight.w600,);
 
-}

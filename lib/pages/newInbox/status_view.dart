@@ -1,18 +1,22 @@
 import 'package:consultation_app/core/utils/constants.dart';
+import 'package:consultation_app/pages/newInbox/new_inbox_view.dart';
+import 'package:consultation_app/provider/status_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class StatusView extends StatefulWidget {
-  const StatusView({super.key});
-
+  static String id = '/status_view';
+  const StatusView({super.key,   this.controller, });
+final ScrollController? controller ;
   @override
   State<StatusView> createState() => _StatusViewState();
 }
 
-int? selectedIndex;
-
 class _StatusViewState extends State<StatusView> {
+ int? selectedIndex ;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,54 +84,86 @@ class _StatusViewState extends State<StatusView> {
                   SizedBox(
                     height: 27.h,
                   ),
-                  Expanded(
-                    child: ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      separatorBuilder: (context, index) {
-                        return const Divider(
-                          thickness: 1,
-                          height: 20,
+                  Consumer<StatusProvider>(
+                    builder: (context, statusProvider, child) {
+                      if (statusProvider.state == StatusesState.Loading) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
-                      },
-                      shrinkWrap: true,
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        return InkWell(
-                          onTap: () {
-                            setState(() {
-                              selectedIndex = index;
-                            });
-                          },
-                          child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 32,
-                                  width: 32,
-                                  decoration: BoxDecoration(
-                                      color: const Color(0xffFA3A57),
-                                      borderRadius:
-                                          BorderRadius.circular(10.r)),
-                                ),
-                                SizedBox(
-                                  width: 16.w,
-                                ),
-                                Text(
-                                  'Inbox',
-                                  style: GoogleFonts.poppins(fontSize: 16.sp),
-                                ),
-                                const Spacer(),
-                                selectedIndex == index
-                                    ? const Icon(
-                                        Icons.check,
-                                        color: Colors.blue,
-                                        size: 20,
-                                      )
-                                    : const SizedBox(),
-                              ]),
+                      }
+                      if (statusProvider.state == StatusesState.Error) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
                         );
-                      },
-                    ),
+                      }
+                      final status = statusProvider.statuses;
+                      if (status != null &&
+                          statusProvider.state == StatusesState.Complete) {
+                        return Expanded(
+                          child: ListView.separated(
+                            controller: widget.controller,
+                            physics: const NeverScrollableScrollPhysics(),
+
+                            separatorBuilder: (context, index) {
+                              return const Divider(
+                                thickness: 1,
+                                height: 20,
+                              );
+                            },
+                            shrinkWrap: true,
+                            itemCount: 4,
+                            itemBuilder: (context, index) {
+                              return InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    selectedIndex = status[index].id!;
+                                    Future.delayed(const Duration(milliseconds:250),(){
+                                      Navigator.pushNamed(context,NewInbox.id,arguments: {
+                                        'name': status[index].name,
+                                        'color':status[index].color ,
+                                      } );
+                                    });
+                                  });
+                                },
+                                child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: 32,
+                                        width: 32,
+                                        decoration: BoxDecoration(
+                                            color:  Color(int.parse(status[index].color!)),
+                                            borderRadius:
+                                                BorderRadius.circular(10.r)),
+                                      ),
+                                      SizedBox(
+                                        width: 16.w,
+                                      ),
+                                      Text(
+                                        status[index].name!,
+                                        style: GoogleFonts.poppins(
+                                            fontSize: 16.sp),
+                                      ),
+                                      const Spacer(),
+                                      selectedIndex == status[index].id
+                                          ? const Icon(
+                                              Icons.check,
+                                              color: Colors.blue,
+                                              size: 20,
+                                            )
+                                          : const SizedBox(),
+                                    ]),
+                              );
+                            },
+                          ),
+                        );
+                      } else {
+                        return const Center(
+                          child: Text('No Data'),
+                        );
+                      }
+                    },
                   ),
                 ],
               ),

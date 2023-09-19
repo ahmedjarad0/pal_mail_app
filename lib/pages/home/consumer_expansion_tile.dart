@@ -1,11 +1,11 @@
 import 'package:consultation_app/pages/widgets/custom_shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../model/mail.dart';
-import '../../../provider/category_provider.dart';
-import '../../../provider/mails_provider.dart';
-import 'content_expansion_tile.dart';
-import 'custom_expansion_tile.dart';
+import '../../model/mail.dart';
+import '../../provider/category_provider.dart';
+import '../../provider/mails_provider.dart';
+import '../widgets/content_expansion_tile.dart';
+import '../widgets/custom_expansion_tile.dart';
 
 class ConsumerExpansionTile extends StatelessWidget {
   const ConsumerExpansionTile({super.key});

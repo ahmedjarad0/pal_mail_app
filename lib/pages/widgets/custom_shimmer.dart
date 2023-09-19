@@ -1,8 +1,7 @@
-import 'package:consultation_app/pages/home/widget/custom_status_card.dart';
+import 'package:consultation_app/pages/home/custom_status_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:shimmer/shimmer.dart';
-
 import 'custom_action_chip.dart';
 
 class CategoriesShimmer extends StatelessWidget {

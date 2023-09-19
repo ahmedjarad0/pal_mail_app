@@ -10,7 +10,9 @@ class CustomTextFieldNewIndex extends StatelessWidget {
     this.labelText,
     this.onTap,
     this.style,
-    this.prefixIcon, this.suffixIcon, this.prefix,
+    this.prefixIcon,
+    this.suffixIcon,
+    this.prefix,
   });
 
   final String? hintText;
@@ -27,7 +29,6 @@ class CustomTextFieldNewIndex extends StatelessWidget {
   final Widget? prefix;
   final Widget? suffixIcon;
 
-
   @override
   Widget build(BuildContext context) {
     return TextField(
@@ -35,6 +36,7 @@ class CustomTextFieldNewIndex extends StatelessWidget {
       controller: controller,
       onTapOutside: (v) {
         FocusScope.of(context).unfocus();
+        // FocusManager.instance.primaryFocus?.unfocus();
       },
       onTap: onTap,
       decoration: InputDecoration(
@@ -43,8 +45,8 @@ class CustomTextFieldNewIndex extends StatelessWidget {
             color: const Color(0xffAFAFAF), fontSize: 14.sp),
         hintText: hintText,
         labelText: labelText,
-        labelStyle: GoogleFonts.poppins(color: Colors.black,fontSize: 22.sp),
- prefixIcon: prefixIcon,
+        labelStyle: GoogleFonts.poppins(color: Colors.black, fontSize: 22.sp),
+        prefixIcon: prefixIcon,
         floatingLabelBehavior: FloatingLabelBehavior.always,
         border: InputBorder.none,
         errorBorder: InputBorder.none,
