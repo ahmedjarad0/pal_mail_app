@@ -27,11 +27,10 @@ class _NewInboxState extends State<NewInbox> {
   late TextEditingController _dateCtr;
   late ImagePicker _imagePicker;
   XFile? _pickedImage;
-  bool _expansionChanged = false;
   int? categoryId;
-  int? statusId;
-String name = 'Inbox';
-String color = '0xffFA3A57';
+  String name = 'Inbox';
+  String color = '0xffFA3A57';
+
   @override
   void initState() {
     // TODO: implement initState
@@ -50,9 +49,15 @@ String color = '0xffFA3A57';
 
   @override
   Widget build(BuildContext context) {
-    // final route = ModalRoute.of(context)!.settings.arguments as Map<String,dynamic>;
-    // name= route['name'];
-    // color= route['color'];
+    ModalRoute? modalRoute = ModalRoute.of(context);
+    if (modalRoute != null && modalRoute.settings.arguments != null) {
+      if (modalRoute.settings.arguments is Map<String, dynamic>) {
+        Map<String, dynamic> map =
+            modalRoute.settings.arguments as Map<String, dynamic>;
+        name = map['name'];
+        color = map['color'];
+      }
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -276,7 +281,7 @@ String color = '0xffFA3A57';
                           padding: const EdgeInsets.symmetric(
                               horizontal: 10, vertical: 3),
                           decoration: BoxDecoration(
-                              color:  Color(int.parse(color)),
+                              color: Color(int.parse(color)),
                               borderRadius: BorderRadius.circular(30.r)),
                           child: Text(
                             name,
@@ -284,8 +289,6 @@ String color = '0xffFA3A57';
                                 fontSize: 12, color: Colors.white),
                           ),
                         ),
-
-
                         const Spacer(),
                         const Icon(
                           Icons.arrow_forward_ios,
@@ -294,10 +297,7 @@ String color = '0xffFA3A57';
                         ),
                       ],
                     )),
-              )
-
-
-              ,
+              ),
               SizedBox(
                 height: 12.h,
               ),
@@ -347,19 +347,19 @@ String color = '0xffFA3A57';
                     ),
                     _pickedImage == null
                         ? ElevatedButton(
-                      onPressed: () {
-                        _pickImage();
-                      },
-                      style: ElevatedButton.styleFrom(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8)),
-                          minimumSize: const Size(40, 15),
-                          padding: EdgeInsets.zero),
-                      child: const Icon(
-                        Icons.add,
-                        size: 18,
-                      ),
-                    )
+                            onPressed: () {
+                              _pickImage();
+                            },
+                            style: ElevatedButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8)),
+                                minimumSize: const Size(40, 15),
+                                padding: EdgeInsets.zero),
+                            child: const Icon(
+                              Icons.add,
+                              size: 18,
+                            ),
+                          )
                         : Image.file(File(_pickedImage!.path)),
                   ],
                 ),
@@ -433,7 +433,7 @@ String color = '0xffFA3A57';
                       clipBehavior: Clip.hardEdge,
                       decoration: const BoxDecoration(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(25)),
+                            BorderRadius.vertical(top: Radius.circular(25)),
                       ),
                       child: const TagView());
                 },
@@ -445,7 +445,9 @@ String color = '0xffFA3A57';
     ).then((value) => value);
   }
 
-  Future<dynamic> _showCategoryBottomSheet(BuildContext context,) {
+  Future<dynamic> _showCategoryBottomSheet(
+    BuildContext context,
+  ) {
     return showModalBottomSheet(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
@@ -467,7 +469,7 @@ String color = '0xffFA3A57';
                       clipBehavior: Clip.hardEdge,
                       decoration: const BoxDecoration(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(25)),
+                            BorderRadius.vertical(top: Radius.circular(25)),
                       ),
                       child: const CategoryView());
                 },
@@ -477,7 +479,11 @@ String color = '0xffFA3A57';
         );
       },
     ).then((value) => value);
-  }  Future<dynamic> _showStatusBottomSheet(BuildContext context,) {
+  }
+
+  Future<dynamic> _showStatusBottomSheet(
+    BuildContext context,
+  ) {
     return showModalBottomSheet(
       shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.vertical(top: Radius.circular(25))),
@@ -499,7 +505,7 @@ String color = '0xffFA3A57';
                       clipBehavior: Clip.hardEdge,
                       decoration: const BoxDecoration(
                         borderRadius:
-                        BorderRadius.vertical(top: Radius.circular(25)),
+                            BorderRadius.vertical(top: Radius.circular(25)),
                       ),
                       child: const StatusView());
                 },
@@ -510,7 +516,6 @@ String color = '0xffFA3A57';
       },
     ).then((value) => value);
   }
-
 
   void _pickData() async {
     DateTime? dateTime = await showDatePicker(
@@ -527,7 +532,7 @@ String color = '0xffFA3A57';
 
   void _pickImage() async {
     XFile? imageFile =
-    await _imagePicker.pickImage(source: ImageSource.gallery);
+        await _imagePicker.pickImage(source: ImageSource.gallery);
     if (imageFile != null) {
       setState(() {
         _pickedImage = imageFile;
