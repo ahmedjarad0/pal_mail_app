@@ -117,12 +117,13 @@ class _StatusViewState extends State<StatusView> {
                                 onTap: () {
                                   setState(() {
                                     selectedIndex = status[index].id!;
-                                    Future.delayed(const Duration(milliseconds:250),(){
-                                      Navigator.pushNamed(context,NewInbox.id,arguments: {
-                                        'name': status[index].name,
-                                        'color':status[index].color ,
-                                      } );
-                                    });
+
+                                  });
+                                  Future.delayed(const Duration(milliseconds:250),(){
+                                    Navigator.pushNamed(context,NewInbox.id,arguments: {
+                                      'name': status[index].name!,
+                                      'color':status[index].color! ,
+                                    } );
                                   });
                                 },
                                 child: Row(
