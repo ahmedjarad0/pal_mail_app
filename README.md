@@ -1,6 +1,6 @@
-# consultation_app
+# consultation_app_pailmail
 
-A new Flutter project.
+![logo (1)](https://github.com/ahmedjarad0/pal_mail_app/assets/113943692/4956f73f-9474-4ad0-aa92-befa58b1ac4f)
 
 ## Getting Started
 
